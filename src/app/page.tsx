@@ -301,16 +301,16 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-gray-200">
+      <header className="bg-black/80 backdrop-blur-sm shadow-sm border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
                 <LinkIcon className="w-5 h-5 text-white" />
               </div>
-              <h1 className="text-xl font-bold text-black">LinkDash</h1>
+              <h1 className="text-xl font-bold text-white">LinkDash</h1>
             </div>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
@@ -319,14 +319,14 @@ export default function Home() {
                     {session.user?.name?.charAt(0) || "U"}
                   </span>
                 </div>
-                <span className="text-gray-700 font-medium">
+                <span className="text-gray-300 font-medium">
                   {session.user?.name}
                 </span>
               </div>
               <Button
                 variant="outline"
                 size="sm"
-                className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                className="border-gray-600 text-gray-300 hover:bg-gray-800"
               >
                 <Settings className="mr-2 h-4 w-4" />
                 Settings
@@ -335,7 +335,7 @@ export default function Home() {
                 variant="outline"
                 size="sm"
                 onClick={() => signOut()}
-                className="border-gray-200 text-gray-600 hover:bg-gray-50"
+                className="border-gray-600 text-gray-300 hover:bg-gray-800"
               >
                 Sign Out
               </Button>
@@ -347,14 +347,14 @@ export default function Home() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Welcome Section */}
         <div className="mb-12 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Welcome back,{" "}
-            <span className="bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
               {session.user?.name?.split(" ")[0]}
             </span>
             !
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
             Create beautiful link dashboards and share them with the world. Your
             digital presence starts here.
           </p>
@@ -429,7 +429,7 @@ export default function Home() {
 
         {/* Dashboards Grid */}
         <div className="mb-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6">
+          <h3 className="text-2xl font-bold text-white mb-6">
             Your Dashboards
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -547,12 +547,12 @@ export default function Home() {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
-          <h3 className="text-xl font-semibold text-gray-900 mb-6">
+        <div className="bg-black/60 backdrop-blur-sm rounded-2xl p-8 border border-gray-800">
+          <h3 className="text-xl font-semibold text-white mb-6">
             Quick Actions
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button className="h-16 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+            <Button className="h-16 bg-white hover:bg-gray-100 text-gray-900 border border-gray-300 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="flex items-center space-x-3">
                 <Plus className="w-5 h-5" />
                 <span className="font-semibold">New Dashboard</span>
@@ -560,7 +560,7 @@ export default function Home() {
             </Button>
             <Button
               variant="outline"
-              className="h-16 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl"
+              className="h-16 border-gray-600 text-gray-300 hover:bg-gray-800 rounded-xl"
             >
               <div className="flex items-center space-x-3">
                 <BarChart3 className="w-5 h-5" />
@@ -569,7 +569,7 @@ export default function Home() {
             </Button>
             <Button
               variant="outline"
-              className="h-16 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl"
+              className="h-16 border-gray-600 text-gray-300 hover:bg-gray-800 rounded-xl"
             >
               <div className="flex items-center space-x-3">
                 <Share2 className="w-5 h-5" />

@@ -95,14 +95,14 @@ export default function PublicDashboard({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 py-12 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold text-white mb-4">
             {dashboard.title}
           </h1>
           {dashboard.description && (
-            <p className="text-lg text-gray-600">{dashboard.description}</p>
+            <p className="text-lg text-gray-300">{dashboard.description}</p>
           )}
         </div>
 
@@ -143,7 +143,7 @@ export default function PublicDashboard({
         )}
 
         <div className="mt-12 text-center">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-400">
             Powered by Personal Link Dashboard
           </p>
         </div>

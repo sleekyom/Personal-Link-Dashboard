@@ -142,8 +142,8 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      <header className="bg-white shadow-sm border-b border-gray-200">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+      <header className="bg-black/80 shadow-sm border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
@@ -151,7 +151,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back
               </Button>
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-xl font-semibold text-white">
                 {dashboard.title}
               </h1>
             </div>
@@ -159,7 +159,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                className="border-gray-600 text-gray-300 hover:bg-gray-800"
               >
                 <Edit className="mr-2 h-4 w-4" />
                 Edit Dashboard
@@ -167,7 +167,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                className="border-gray-600 text-gray-300 hover:bg-gray-800"
               >
                 <ExternalLink className="mr-2 h-4 w-4" />
                 View Public
@@ -179,10 +179,10 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl font-bold text-white mb-2">
             Manage Your Links
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-300">
             Add, edit, and organize your links. Drag to reorder them.
           </p>
         </div>
