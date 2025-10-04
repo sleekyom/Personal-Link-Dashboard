@@ -142,8 +142,8 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+      <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
@@ -156,11 +156,19 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-gray-300 text-gray-700 hover:bg-gray-50"
+              >
                 <Edit className="mr-2 h-4 w-4" />
                 Edit Dashboard
               </Button>
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-gray-300 text-gray-700 hover:bg-gray-50"
+              >
                 <ExternalLink className="mr-2 h-4 w-4" />
                 View Public
               </Button>
@@ -181,7 +189,10 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
 
         <div className="space-y-4">
           {dashboard.links.map((link) => (
-            <Card key={link.id} className="hover:shadow-md transition-shadow">
+            <Card
+              key={link.id}
+              className="hover:shadow-md transition-shadow border-gray-200"
+            >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
@@ -260,11 +271,17 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
                     />
                   </div>
                   <div className="flex space-x-2">
-                    <Button type="submit">Add Link</Button>
+                    <Button
+                      type="submit"
+                      className="bg-black hover:bg-gray-800 text-white"
+                    >
+                      Add Link
+                    </Button>
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => setShowAddLink(false)}
+                      className="border-gray-300 text-gray-700 hover:bg-gray-50"
                     >
                       Cancel
                     </Button>

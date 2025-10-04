@@ -95,7 +95,7 @@ export default function PublicDashboard({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-12 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -110,7 +110,7 @@ export default function PublicDashboard({
           {dashboard.links.map((link) => (
             <Card
               key={link.id}
-              className="hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+              className="hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer border-gray-200"
               onClick={() => handleLinkClick(link.id, link.url)}
             >
               <CardContent className="p-6">

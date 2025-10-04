@@ -60,8 +60,8 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-xl border-gray-200">
         <CardHeader className="text-center">
           <Button
             variant="ghost"
@@ -74,7 +74,7 @@ export default function SignIn() {
           <CardTitle className="text-3xl font-bold text-gray-900">
             Sign In
           </CardTitle>
-          <CardDescription className="text-lg">
+          <CardDescription className="text-lg text-gray-700">
             Welcome back! Please sign in to your account.
           </CardDescription>
         </CardHeader>
@@ -87,7 +87,7 @@ export default function SignIn() {
 
           <Button
             onClick={handleGoogleSignIn}
-            className="w-full"
+            className="w-full bg-black hover:bg-gray-800 text-white"
             size="lg"
             disabled={loading}
           >
@@ -100,7 +100,7 @@ export default function SignIn() {
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">
+              <span className="px-2 bg-white text-gray-600">
                 Or continue with email
               </span>
             </div>
@@ -118,6 +118,7 @@ export default function SignIn() {
                 placeholder="Enter your email"
                 required
                 disabled={loading}
+                className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-gray-500 focus:ring-gray-500"
               />
             </div>
             <div>
@@ -131,11 +132,12 @@ export default function SignIn() {
                 placeholder="Enter your password"
                 required
                 disabled={loading}
+                className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-gray-500 focus:ring-gray-500"
               />
             </div>
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-black hover:bg-gray-800 text-white"
               size="lg"
               disabled={loading}
             >
@@ -146,7 +148,7 @@ export default function SignIn() {
           <div className="text-center text-sm text-gray-600">
             Don't have an account?{" "}
             <button
-              className="text-blue-600 hover:underline"
+              className="text-gray-700 hover:text-black hover:underline font-medium"
               onClick={() => router.push("/auth/signup")}
             >
               Sign up here

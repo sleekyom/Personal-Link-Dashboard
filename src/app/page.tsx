@@ -37,7 +37,7 @@ export default function Home() {
   }
 
   if (!session) {
-  return (
+    return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
         {/* Hero Section */}
         <div className="relative overflow-hidden">
@@ -65,8 +65,8 @@ export default function Home() {
                   className="text-gray-300 hover:text-white transition-colors"
                 >
                   Pricing
-          </a>
-          <a
+                </a>
+                <a
                   href="#about"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
@@ -99,7 +99,7 @@ export default function Home() {
                 <Button
                   onClick={() => signIn(undefined, { callbackUrl: "/" })}
                   size="lg"
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105"
+                  className="bg-white text-black hover:bg-gray-100 px-8 py-4 text-lg font-semibold rounded-full shadow-2xl hover:shadow-white/25 transition-all duration-300 transform hover:scale-105"
                 >
                   Get Started Free
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -121,7 +121,7 @@ export default function Home() {
                   <div className="bg-white rounded-2xl p-6 shadow-xl">
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"></div>
+                        <div className="w-10 h-10 bg-black rounded-full"></div>
                         <div>
                           <h3 className="font-semibold text-gray-900">
                             John Doe
@@ -130,9 +130,9 @@ export default function Home() {
                         </div>
                       </div>
                       <div className="flex space-x-2">
-                        <div className="w-3 h-3 bg-red-400 rounded-full"></div>
-                        <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                        <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                        <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                        <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
+                        <div className="w-3 h-3 bg-gray-600 rounded-full"></div>
                       </div>
                     </div>
                     <div className="space-y-3">
@@ -140,7 +140,7 @@ export default function Home() {
                         {
                           title: "My Portfolio",
                           desc: "Check out my latest work",
-                          color: "from-blue-500 to-purple-500"
+                          color: "from-gray-800 to-black"
                         },
                         {
                           title: "GitHub",
@@ -150,12 +150,12 @@ export default function Home() {
                         {
                           title: "LinkedIn",
                           desc: "Professional network",
-                          color: "from-blue-600 to-blue-800"
+                          color: "from-gray-600 to-gray-800"
                         },
                         {
                           title: "Blog",
                           desc: "Thoughts and tutorials",
-                          color: "from-green-500 to-teal-500"
+                          color: "from-gray-500 to-gray-700"
                         }
                       ].map((link, i) => (
                         <div
@@ -232,7 +232,7 @@ export default function Home() {
                     key={i}
                     className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 group"
                   >
-                    <div className="text-purple-400 mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <div className="text-white mb-4 group-hover:scale-110 transition-transform duration-300">
                       {feature.icon}
                     </div>
                     <h3 className="text-xl font-semibold text-white mb-3">
@@ -261,7 +261,7 @@ export default function Home() {
                 <Button
                   onClick={() => signIn(undefined, { callbackUrl: "/" })}
                   size="lg"
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105"
+                  className="bg-white text-black hover:bg-gray-100 px-8 py-4 text-lg font-semibold rounded-full shadow-2xl hover:shadow-white/25 transition-all duration-300 transform hover:scale-105"
                 >
                   Create Your Dashboard
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -277,8 +277,8 @@ export default function Home() {
           <div className="relative z-10 px-6 py-8 border-t border-white/10">
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
               <div className="flex items-center space-x-2 mb-4 md:mb-0">
-                <div className="w-6 h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-lg flex items-center justify-center">
-                  <LinkIcon className="w-4 h-4 text-white" />
+                <div className="w-6 h-6 bg-white rounded-lg flex items-center justify-center">
+                  <LinkIcon className="w-4 h-4 text-black" />
                 </div>
                 <span className="text-lg font-bold text-white">LinkDash</span>
               </div>
@@ -301,22 +301,20 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-white/20">
+      <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
                 <LinkIcon className="w-5 h-5 text-white" />
               </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                LinkDash
-              </h1>
+              <h1 className="text-xl font-bold text-black">LinkDash</h1>
             </div>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
                   <span className="text-white text-sm font-semibold">
                     {session.user?.name?.charAt(0) || "U"}
                   </span>
@@ -328,7 +326,7 @@ export default function Home() {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-purple-200 text-purple-600 hover:bg-purple-50"
+                className="border-gray-300 text-gray-700 hover:bg-gray-50"
               >
                 <Settings className="mr-2 h-4 w-4" />
                 Settings
@@ -351,7 +349,7 @@ export default function Home() {
         <div className="mb-12 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Welcome back,{" "}
-            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
               {session.user?.name?.split(" ")[0]}
             </span>
             !
@@ -364,65 +362,65 @@ export default function Home() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 shadow-lg">
+          <Card className="bg-white border-gray-200 shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-blue-100 text-sm font-medium">
+                  <p className="text-gray-600 text-sm font-medium">
                     Total Dashboards
                   </p>
-                  <p className="text-3xl font-bold">3</p>
+                  <p className="text-3xl font-bold text-gray-900">3</p>
                 </div>
-                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                  <Share2 className="w-6 h-6" />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <Share2 className="w-6 h-6 text-gray-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0 shadow-lg">
+          <Card className="bg-white border-gray-200 shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-green-100 text-sm font-medium">
+                  <p className="text-gray-600 text-sm font-medium">
                     Total Links
                   </p>
-                  <p className="text-3xl font-bold">24</p>
+                  <p className="text-3xl font-bold text-gray-900">24</p>
                 </div>
-                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                  <LinkIcon className="w-6 h-6" />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <LinkIcon className="w-6 h-6 text-gray-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0 shadow-lg">
+          <Card className="bg-white border-gray-200 shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-purple-100 text-sm font-medium">
+                  <p className="text-gray-600 text-sm font-medium">
                     Total Views
                   </p>
-                  <p className="text-3xl font-bold">1.2K</p>
+                  <p className="text-3xl font-bold text-gray-900">1.2K</p>
                 </div>
-                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                  <BarChart3 className="w-6 h-6" />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <BarChart3 className="w-6 h-6 text-gray-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-pink-500 to-pink-600 text-white border-0 shadow-lg">
+          <Card className="bg-white border-gray-200 shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-pink-100 text-sm font-medium">
+                  <p className="text-gray-600 text-sm font-medium">
                     This Month
                   </p>
-                  <p className="text-3xl font-bold">+12%</p>
+                  <p className="text-3xl font-bold text-gray-900">+12%</p>
                 </div>
-                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                  <Zap className="w-6 h-6" />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <Zap className="w-6 h-6 text-gray-600" />
                 </div>
               </div>
             </CardContent>
@@ -436,12 +434,12 @@ export default function Home() {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Create New Dashboard Card */}
-            <Card className="border-2 border-dashed border-purple-300 hover:border-purple-400 transition-all duration-300 cursor-pointer group hover:shadow-lg">
+            <Card className="border-2 border-dashed border-gray-300 hover:border-gray-400 transition-all duration-300 cursor-pointer group hover:shadow-lg">
               <CardContent className="flex flex-col items-center justify-center h-64 p-6">
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <Plus className="h-8 w-8 text-white" />
+                <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <Plus className="h-8 w-8 text-gray-600" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-gray-600 transition-colors">
                   Create New Dashboard
                 </h3>
                 <p className="text-sm text-gray-500 text-center leading-relaxed">
@@ -458,7 +456,7 @@ export default function Home() {
                 description: "Professional links and projects",
                 links: 8,
                 views: 1234,
-                color: "from-blue-500 to-purple-500",
+                color: "bg-gray-100",
                 slug: "my-portfolio"
               },
               {
@@ -466,7 +464,7 @@ export default function Home() {
                 description: "All my social profiles in one place",
                 links: 5,
                 views: 856,
-                color: "from-pink-500 to-red-500",
+                color: "bg-gray-200",
                 slug: "social-media"
               },
               {
@@ -474,7 +472,7 @@ export default function Home() {
                 description: "Useful tools and documentation",
                 links: 12,
                 views: 2103,
-                color: "from-green-500 to-teal-500",
+                color: "bg-gray-300",
                 slug: "resources"
               }
             ].map((dashboard, i) => (
@@ -486,12 +484,12 @@ export default function Home() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div
-                        className={`w-10 h-10 bg-gradient-to-r ${dashboard.color} rounded-xl flex items-center justify-center`}
+                        className={`w-10 h-10 ${dashboard.color} rounded-xl flex items-center justify-center`}
                       >
-                        <LinkIcon className="w-5 h-5 text-white" />
+                        <LinkIcon className="w-5 h-5 text-gray-600" />
                       </div>
                       <div>
-                        <CardTitle className="text-lg group-hover:text-purple-600 transition-colors">
+                        <CardTitle className="text-lg group-hover:text-gray-600 transition-colors">
                           {dashboard.title}
                         </CardTitle>
                         <CardDescription className="text-sm">
@@ -530,13 +528,13 @@ export default function Home() {
                     <div className="flex items-center justify-between">
                       <Link
                         href={`/public/${dashboard.slug}`}
-                        className="text-purple-600 hover:text-purple-700 text-sm font-medium hover:underline"
+                        className="text-gray-500 hover:text-gray-700 text-sm font-medium hover:underline"
                       >
                         yourdomain.com/{dashboard.slug}
                       </Link>
                       <Button
                         size="sm"
-                        className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300"
                       >
                         View
                       </Button>
@@ -554,7 +552,7 @@ export default function Home() {
             Quick Actions
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button className="h-16 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+            <Button className="h-16 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="flex items-center space-x-3">
                 <Plus className="w-5 h-5" />
                 <span className="font-semibold">New Dashboard</span>
@@ -562,7 +560,7 @@ export default function Home() {
             </Button>
             <Button
               variant="outline"
-              className="h-16 border-purple-200 text-purple-600 hover:bg-purple-50 rounded-xl"
+              className="h-16 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl"
             >
               <div className="flex items-center space-x-3">
                 <BarChart3 className="w-5 h-5" />
@@ -571,7 +569,7 @@ export default function Home() {
             </Button>
             <Button
               variant="outline"
-              className="h-16 border-green-200 text-green-600 hover:bg-green-50 rounded-xl"
+              className="h-16 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl"
             >
               <div className="flex items-center space-x-3">
                 <Share2 className="w-5 h-5" />
