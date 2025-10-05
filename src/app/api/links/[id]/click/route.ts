@@ -3,11 +3,12 @@ import { prisma } from "@/lib/db"
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const link = await prisma.link.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!link) {
@@ -16,7 +17,7 @@ export async function POST(
 
     // Increment click count
     const updatedLink = await prisma.link.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         clickCount: {
           increment: 1

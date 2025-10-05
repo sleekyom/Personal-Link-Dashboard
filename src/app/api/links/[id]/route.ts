@@ -5,9 +5,10 @@ import { prisma } from "@/lib/db"
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
@@ -18,7 +19,7 @@ export async function PUT(
 
     // Check if user owns the link's dashboard
     const link = await prisma.link.findFirst({
-      where: { id: params.id },
+      where: { id: id },
       include: {
         dashboard: true
       }
@@ -29,7 +30,7 @@ export async function PUT(
     }
 
     const updatedLink = await prisma.link.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         title,
         url,
@@ -47,9 +48,10 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
@@ -58,7 +60,7 @@ export async function DELETE(
 
     // Check if user owns the link's dashboard
     const link = await prisma.link.findFirst({
-      where: { id: params.id },
+      where: { id: id },
       include: {
         dashboard: true
       }
@@ -69,7 +71,7 @@ export async function DELETE(
     }
 
     await prisma.link.delete({
-      where: { id: params.id }
+      where: { id: id }
     })
 
     return NextResponse.json({ message: "Link deleted successfully" })

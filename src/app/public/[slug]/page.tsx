@@ -86,7 +86,8 @@ export default function PublicDashboard({
               Dashboard Not Found
             </CardTitle>
             <CardDescription>
-              The dashboard you're looking for doesn't exist or is private.
+              The dashboard you&apos;re looking for doesn&apos;t exist or is
+              private.
             </CardDescription>
           </CardHeader>
         </Card>

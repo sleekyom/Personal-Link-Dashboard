@@ -127,7 +127,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
               Dashboard Not Found
             </CardTitle>
             <CardDescription>
-              The dashboard you're looking for doesn't exist.
+              The dashboard you&apos;re looking for doesn&apos;t exist.
             </CardDescription>
           </CardHeader>
           <CardContent>

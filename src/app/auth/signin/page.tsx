@@ -146,7 +146,7 @@ export default function SignIn() {
           </form>
 
           <div className="text-center text-sm text-gray-600">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <button
               className="text-gray-700 hover:text-black hover:underline font-medium"
               onClick={() => router.push("/auth/signup")}

@@ -5,11 +5,12 @@ import { prisma } from "@/lib/db"
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const dashboard = await prisma.dashboard.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         links: {
           orderBy: {
@@ -38,9 +39,10 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
@@ -50,7 +52,7 @@ export async function POST(
     // Check if user owns the dashboard
     const dashboard = await prisma.dashboard.findFirst({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id
       }
     })
@@ -63,7 +65,7 @@ export async function POST(
 
     // Get the highest order number for this dashboard
     const lastLink = await prisma.link.findFirst({
-      where: { dashboardId: params.id },
+      where: { dashboardId: id },
       orderBy: { order: 'desc' }
     })
 
@@ -75,7 +77,7 @@ export async function POST(
         url,
         description,
         order: newOrder,
-        dashboardId: params.id
+        dashboardId: id
       }
     })
 

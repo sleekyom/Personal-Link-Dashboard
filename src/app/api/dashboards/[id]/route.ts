@@ -5,11 +5,12 @@ import { prisma } from "@/lib/db"
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const dashboard = await prisma.dashboard.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         links: {
           orderBy: {
@@ -38,9 +39,10 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
@@ -52,7 +54,7 @@ export async function PUT(
     // Check if user owns the dashboard
     const existingDashboard = await prisma.dashboard.findFirst({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id
       }
     })
@@ -73,7 +75,7 @@ export async function PUT(
     }
 
     const dashboard = await prisma.dashboard.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         title,
         description,
@@ -92,9 +94,10 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
@@ -104,7 +107,7 @@ export async function DELETE(
     // Check if user owns the dashboard
     const existingDashboard = await prisma.dashboard.findFirst({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id
       }
     })
@@ -114,7 +117,7 @@ export async function DELETE(
     }
 
     await prisma.dashboard.delete({
-      where: { id: params.id }
+      where: { id: id }
     })
 
     return NextResponse.json({ message: "Dashboard deleted successfully" })
