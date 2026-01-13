@@ -12,7 +12,24 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Edit, Trash2, ExternalLink, Eye, ArrowLeft } from "lucide-react";
+import { Plus, Edit, Trash2, ExternalLink, Eye, ArrowLeft, GripVertical } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface Link {
   id: string;
@@ -33,6 +50,73 @@ interface Dashboard {
   links: Link[];
 }
 
+function SortableLink({
+  link,
+  onDelete,
+}: {
+  link: Link;
+  onDelete: (id: string) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: link.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      <Card className="hover:shadow-md transition-shadow border-gray-200">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 flex-1">
+              <button
+                className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 touch-none"
+                {...attributes}
+                {...listeners}
+              >
+                <GripVertical className="h-5 w-5" />
+              </button>
+              <div className="flex-1">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  {link.title}
+                </h3>
+                {link.description && (
+                  <p className="text-gray-600 mb-2">{link.description}</p>
+                )}
+                <div className="flex items-center text-sm text-gray-500">
+                  <Eye className="h-4 w-4 mr-1" />
+                  {link.clickCount} clicks
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button variant="ghost" size="sm">
+                <Edit className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onDelete(link.id)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 export default function DashboardPage({ params }: { params: { id: string } }) {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -44,6 +128,13 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
     url: "",
     description: ""
   });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -107,6 +198,42 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
       }
     } catch (error) {
       console.error("Error deleting link:", error);
+    }
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id || !dashboard) {
+      return;
+    }
+
+    const oldIndex = dashboard.links.findIndex((link) => link.id === active.id);
+    const newIndex = dashboard.links.findIndex((link) => link.id === over.id);
+
+    // Update local state immediately for better UX
+    const newLinks = arrayMove(dashboard.links, oldIndex, newIndex);
+    setDashboard({ ...dashboard, links: newLinks });
+
+    // Update order in the backend
+    try {
+      const linkIds = newLinks.map((link) => link.id);
+      const response = await fetch(`/api/dashboards/${params.id}/links/reorder`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ linkIds })
+      });
+
+      if (!response.ok) {
+        // Revert if the API call fails
+        fetchDashboard();
+      }
+    } catch (error) {
+      console.error("Error reordering links:", error);
+      // Revert on error
+      fetchDashboard();
     }
   };
 
@@ -188,41 +315,24 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
         </div>
 
         <div className="space-y-4">
-          {dashboard.links.map((link) => (
-            <Card
-              key={link.id}
-              className="hover:shadow-md transition-shadow border-gray-200"
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={dashboard.links.map((link) => link.id)}
+              strategy={verticalListSortingStrategy}
             >
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                      {link.title}
-                    </h3>
-                    {link.description && (
-                      <p className="text-gray-600 mb-2">{link.description}</p>
-                    )}
-                    <div className="flex items-center text-sm text-gray-500">
-                      <Eye className="h-4 w-4 mr-1" />
-                      {link.clickCount} clicks
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Button variant="ghost" size="sm">
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDeleteLink(link.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+              {dashboard.links.map((link) => (
+                <SortableLink
+                  key={link.id}
+                  link={link}
+                  onDelete={handleDeleteLink}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
 
           {showAddLink ? (
             <Card>
