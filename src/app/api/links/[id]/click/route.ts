@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
+import { rateLimit, addRateLimitHeaders, createRateLimitErrorResponse, RateLimitConfigs } from "@/lib/rateLimit"
 
 // Helper function to parse user agent
 function parseUserAgent(userAgent: string | null) {
@@ -33,6 +34,12 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Apply rate limiting (tracking - high volume allowed)
+  const rateLimitResult = rateLimit(request, RateLimitConfigs.tracking)
+  if (!rateLimitResult.success) {
+    return createRateLimitErrorResponse(rateLimitResult)
+  }
+
   try {
     const { id } = await params
     const link = await prisma.link.findUnique({
@@ -75,7 +82,8 @@ export async function POST(
       }
     })
 
-    return NextResponse.json({ clickCount: updatedLink.clickCount })
+    const response = NextResponse.json({ clickCount: updatedLink.clickCount })
+    return addRateLimitHeaders(response, rateLimitResult)
   } catch (error) {
     console.error("Error tracking click:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })

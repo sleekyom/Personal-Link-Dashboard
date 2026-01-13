@@ -2,11 +2,18 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
+import { rateLimit, addRateLimitHeaders, createRateLimitErrorResponse, RateLimitConfigs } from "@/lib/rateLimit"
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Apply rate limiting (strict for analytics)
+  const rateLimitResult = rateLimit(request, RateLimitConfigs.strict)
+  if (!rateLimitResult.success) {
+    return createRateLimitErrorResponse(rateLimitResult)
+  }
+
   try {
     const { id } = await params
     const session = await getServerSession(authOptions)
@@ -108,7 +115,7 @@ export async function GET(
       }
     }).sort((a, b) => b.clicks - a.clicks)
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       summary: {
         totalClicks,
         uniqueVisitors,
@@ -126,6 +133,8 @@ export async function GET(
       timeSeriesData,
       linkStats
     })
+
+    return addRateLimitHeaders(response, rateLimitResult)
   } catch (error) {
     console.error("Error fetching analytics:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })

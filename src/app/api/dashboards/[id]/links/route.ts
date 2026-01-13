@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
+import { rateLimit, addRateLimitHeaders, createRateLimitErrorResponse, RateLimitConfigs } from "@/lib/rateLimit"
 
 export async function GET(
   request: NextRequest,
@@ -41,6 +42,12 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Apply rate limiting (moderate)
+  const rateLimitResult = rateLimit(request, RateLimitConfigs.moderate)
+  if (!rateLimitResult.success) {
+    return createRateLimitErrorResponse(rateLimitResult)
+  }
+
   try {
     const { id } = await params
     const session = await getServerSession(authOptions)
@@ -85,7 +92,8 @@ export async function POST(
       }
     })
 
-    return NextResponse.json(link)
+    const response = NextResponse.json(link)
+    return addRateLimitHeaders(response, rateLimitResult)
   } catch (error) {
     console.error("Error creating link:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
