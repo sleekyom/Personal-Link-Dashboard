@@ -56,17 +56,18 @@ model VerificationToken {
 }
 
 model Dashboard {
-  id          String   @id @default(cuid())
+  id          String     @id @default(cuid())
   title       String
   description String?
-  slug        String   @unique
-  isPublic    Boolean  @default(false)
-  theme       String   @default("default")
+  slug        String     @unique
+  isPublic    Boolean    @default(false)
+  theme       String     @default("default")
   userId      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   links       Link[]
+  categories  Category[]
 }
 
 model Link {
@@ -78,10 +79,14 @@ model Link {
   isActive    Boolean      @default(true)
   clickCount  Int          @default(0)
   dashboardId String
+  categoryId  String?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   dashboard   Dashboard    @relation(fields: [dashboardId], references: [id], onDelete: Cascade)
+  category    Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   clickEvents ClickEvent[]
+
+  @@index([categoryId])
 }
 
 model ClickEvent {
@@ -100,4 +105,18 @@ model ClickEvent {
 
   @@index([linkId])
   @@index([timestamp])
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  color       String    @default("#3B82F6")
+  icon        String?
+  dashboardId String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  dashboard   Dashboard @relation(fields: [dashboardId], references: [id], onDelete: Cascade)
+  links       Link[]
+
+  @@index([dashboardId])
 }

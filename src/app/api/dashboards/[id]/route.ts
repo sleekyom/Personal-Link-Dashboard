@@ -13,10 +13,14 @@ export async function GET(
       where: { id },
       include: {
         links: {
+          include: {
+            category: true
+          },
           orderBy: {
             order: 'asc'
           }
-        }
+        },
+        categories: true
       }
     })
 

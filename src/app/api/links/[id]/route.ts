@@ -15,7 +15,7 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { title, url, description, order } = await request.json()
+    const { title, url, description, order, categoryId } = await request.json()
 
     // Check if user owns the link's dashboard
     const link = await prisma.link.findFirst({
@@ -35,7 +35,11 @@ export async function PUT(
         title,
         url,
         description,
-        order: order !== undefined ? order : link.order
+        order: order !== undefined ? order : link.order,
+        ...(categoryId !== undefined && { categoryId })
+      },
+      include: {
+        category: true
       }
     })
 

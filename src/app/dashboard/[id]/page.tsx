@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Edit, Trash2, ExternalLink, Eye, ArrowLeft, GripVertical, BarChart3 } from "lucide-react";
+import { Plus, Edit, Trash2, ExternalLink, Eye, ArrowLeft, GripVertical, BarChart3, Tag, X } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -31,6 +31,16 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
+interface Category {
+  id: string;
+  name: string;
+  color: string;
+  icon?: string;
+  _count?: {
+    links: number;
+  };
+}
+
 interface Link {
   id: string;
   title: string;
@@ -38,6 +48,8 @@ interface Link {
   description?: string;
   order: number;
   clickCount: number;
+  categoryId?: string;
+  category?: Category;
 }
 
 interface Dashboard {
@@ -48,6 +60,7 @@ interface Dashboard {
   isPublic: boolean;
   theme: string;
   links: Link[];
+  categories: Category[];
 }
 
 function SortableLink({
@@ -86,9 +99,22 @@ function SortableLink({
                 <GripVertical className="h-5 w-5" />
               </button>
               <div className="flex-1">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {link.title}
-                </h3>
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="text-xl font-semibold text-gray-900">
+                    {link.title}
+                  </h3>
+                  {link.category && (
+                    <span
+                      className="px-2 py-1 text-xs font-medium rounded-full"
+                      style={{
+                        backgroundColor: `${link.category.color}20`,
+                        color: link.category.color
+                      }}
+                    >
+                      {link.category.name}
+                    </span>
+                  )}
+                </div>
                 {link.description && (
                   <p className="text-gray-600 mb-2">{link.description}</p>
                 )}
@@ -123,10 +149,14 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
   const [dashboard, setDashboard] = useState<Dashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [showAddLink, setShowAddLink] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showCategoryManager, setShowCategoryManager] = useState(false);
+  const [newCategory, setNewCategory] = useState({ name: "", color: "#3B82F6" });
   const [newLink, setNewLink] = useState({
     title: "",
     url: "",
-    description: ""
+    description: "",
+    categoryId: "" as string | undefined
   });
 
   const sensors = useSensors(
@@ -176,7 +206,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
       });
 
       if (response.ok) {
-        setNewLink({ title: "", url: "", description: "" });
+        setNewLink({ title: "", url: "", description: "", categoryId: "" });
         setShowAddLink(false);
         fetchDashboard(); // Refresh the dashboard
       }
@@ -236,6 +266,49 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
       fetchDashboard();
     }
   };
+
+  const handleAddCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCategory.name) return;
+
+    try {
+      const response = await fetch(`/api/dashboards/${params.id}/categories`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newCategory)
+      });
+
+      if (response.ok) {
+        setNewCategory({ name: "", color: "#3B82F6" });
+        setShowCategoryManager(false);
+        fetchDashboard();
+      }
+    } catch (error) {
+      console.error("Error adding category:", error);
+    }
+  };
+
+  const handleDeleteCategory = async (categoryId: string) => {
+    if (!confirm("Are you sure? Links in this category will not be deleted.")) return;
+
+    try {
+      const response = await fetch(`/api/dashboards/${params.id}/categories/${categoryId}`, {
+        method: "DELETE"
+      });
+
+      if (response.ok) {
+        fetchDashboard();
+      }
+    } catch (error) {
+      console.error("Error deleting category:", error);
+    }
+  };
+
+  const filteredLinks = selectedCategory
+    ? dashboard?.links.filter((link) => link.categoryId === selectedCategory) || []
+    : dashboard?.links || [];
 
   if (status === "loading" || loading) {
     return (
@@ -323,6 +396,52 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
           </p>
         </div>
 
+        {/* Category Filter & Management */}
+        <div className="mb-6 flex flex-wrap items-center gap-2">
+          <Button
+            variant={selectedCategory === null ? "default" : "outline"}
+            size="sm"
+            onClick={() => setSelectedCategory(null)}
+            className={selectedCategory === null ? "" : "border-gray-600 text-gray-300 hover:bg-gray-800"}
+          >
+            All ({dashboard.links.length})
+          </Button>
+          {dashboard.categories.map((category) => (
+            <div key={category.id} className="flex items-center gap-1">
+              <Button
+                variant={selectedCategory === category.id ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory(category.id)}
+                className={selectedCategory === category.id ? "" : "border-gray-600 text-gray-300 hover:bg-gray-800"}
+                style={
+                  selectedCategory === category.id
+                    ? { backgroundColor: category.color, borderColor: category.color }
+                    : {}
+                }
+              >
+                {category.name} ({category._count?.links || 0})
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleDeleteCategory(category.id)}
+                className="text-gray-400 hover:text-red-500 h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowCategoryManager(true)}
+            className="border-gray-600 text-gray-300 hover:bg-gray-800"
+          >
+            <Tag className="mr-2 h-4 w-4" />
+            New Category
+          </Button>
+        </div>
+
         <div className="space-y-4">
           <DndContext
             sensors={sensors}
@@ -330,10 +449,10 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
             onDragEnd={handleDragEnd}
           >
             <SortableContext
-              items={dashboard.links.map((link) => link.id)}
+              items={filteredLinks.map((link) => link.id)}
               strategy={verticalListSortingStrategy}
             >
-              {dashboard.links.map((link) => (
+              {filteredLinks.map((link) => (
                 <SortableLink
                   key={link.id}
                   link={link}
@@ -389,6 +508,25 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
                       placeholder="Enter description"
                     />
                   </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Category (optional)
+                    </label>
+                    <select
+                      value={newLink.categoryId || ""}
+                      onChange={(e) =>
+                        setNewLink({ ...newLink, categoryId: e.target.value || undefined })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">No Category</option>
+                      {dashboard.categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                   <div className="flex space-x-2">
                     <Button
                       type="submit"
@@ -425,6 +563,77 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
             </Card>
           )}
         </div>
+
+        {/* Category Manager Modal */}
+        {showCategoryManager && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <Card className="w-full max-w-md">
+              <CardHeader>
+                <CardTitle>Create New Category</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleAddCategory} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Category Name
+                    </label>
+                    <Input
+                      value={newCategory.name}
+                      onChange={(e) =>
+                        setNewCategory({ ...newCategory, name: e.target.value })
+                      }
+                      placeholder="e.g., Social, Projects, Resources"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Color
+                    </label>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="color"
+                        value={newCategory.color}
+                        onChange={(e) =>
+                          setNewCategory({ ...newCategory, color: e.target.value })
+                        }
+                        className="h-10 w-20 rounded border border-gray-300 cursor-pointer"
+                      />
+                      <Input
+                        type="text"
+                        value={newCategory.color}
+                        onChange={(e) =>
+                          setNewCategory({ ...newCategory, color: e.target.value })
+                        }
+                        placeholder="#3B82F6"
+                        className="flex-1"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button
+                      type="submit"
+                      className="bg-black hover:bg-gray-800 text-white"
+                    >
+                      Create Category
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        setShowCategoryManager(false);
+                        setNewCategory({ name: "", color: "#3B82F6" });
+                      }}
+                      className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </main>
     </div>
   );
