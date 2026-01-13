@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Edit, Trash2, ExternalLink, Eye, ArrowLeft, GripVertical } from "lucide-react";
+import { Plus, Edit, Trash2, ExternalLink, Eye, ArrowLeft, GripVertical, BarChart3 } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -283,6 +283,15 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => router.push(`/dashboard/${params.id}/analytics`)}
+                className="border-gray-600 text-gray-300 hover:bg-gray-800"
+              >
+                <BarChart3 className="mr-2 h-4 w-4" />
+                Analytics
+              </Button>
               <Button
                 variant="outline"
                 size="sm"
