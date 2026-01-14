@@ -2,8 +2,15 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
+import { rateLimit, addRateLimitHeaders, createRateLimitErrorResponse, RateLimitConfigs } from "@/lib/rateLimit"
 
 export async function GET(request: NextRequest) {
+  // Apply rate limiting (moderate)
+  const rateLimitResult = rateLimit(request, RateLimitConfigs.moderate)
+  if (!rateLimitResult.success) {
+    return createRateLimitErrorResponse(rateLimitResult)
+  }
+
   try {
     const session = await getServerSession(authOptions)
 
@@ -24,7 +31,8 @@ export async function GET(request: NextRequest) {
       }
     })
 
-    return NextResponse.json(dashboards)
+    const response = NextResponse.json(dashboards)
+    return addRateLimitHeaders(response, rateLimitResult)
   } catch (error) {
     console.error("Error fetching dashboards:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
@@ -32,6 +40,12 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  // Apply rate limiting (moderate)
+  const rateLimitResult = rateLimit(request, RateLimitConfigs.moderate)
+  if (!rateLimitResult.success) {
+    return createRateLimitErrorResponse(rateLimitResult)
+  }
+
   try {
     const session = await getServerSession(authOptions)
 
@@ -61,7 +75,8 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    return NextResponse.json(dashboard)
+    const response = NextResponse.json(dashboard)
+    return addRateLimitHeaders(response, rateLimitResult)
   } catch (error) {
     console.error("Error creating dashboard:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
