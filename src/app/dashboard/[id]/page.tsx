@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Edit, Trash2, ExternalLink, Eye, ArrowLeft, GripVertical, BarChart3, Tag, X } from "lucide-react";
+import { Plus, Edit, Trash2, ExternalLink, Eye, ArrowLeft, GripVertical, BarChart3, Tag, X, QrCode, Download } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -66,9 +66,11 @@ interface Dashboard {
 function SortableLink({
   link,
   onDelete,
+  onShowQR,
 }: {
   link: Link;
   onDelete: (id: string) => void;
+  onShowQR: (linkId: string) => void;
 }) {
   const {
     attributes,
@@ -131,6 +133,13 @@ function SortableLink({
               <Button
                 variant="ghost"
                 size="sm"
+                onClick={() => onShowQR(link.id)}
+              >
+                <QrCode className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => onDelete(link.id)}
               >
                 <Trash2 className="h-4 w-4" />
@@ -151,6 +160,8 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
   const [showAddLink, setShowAddLink] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showCategoryManager, setShowCategoryManager] = useState(false);
+  const [showQRCode, setShowQRCode] = useState(false);
+  const [qrLinkId, setQrLinkId] = useState<string | null>(null);
   const [newCategory, setNewCategory] = useState({ name: "", color: "#3B82F6" });
   const [newLink, setNewLink] = useState({
     title: "",
@@ -306,6 +317,27 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
     }
   };
 
+  const handleDownloadQRCode = async (linkId?: string) => {
+    try {
+      const url = linkId
+        ? `/api/links/${linkId}/qrcode?size=500`
+        : `/api/dashboards/${params.id}/qrcode?size=500`;
+
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = linkId ? `link-qr-${linkId}.png` : `dashboard-qr-${params.id}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error("Error downloading QR code:", error);
+    }
+  };
+
   const filteredLinks = selectedCategory
     ? dashboard?.links.filter((link) => link.categoryId === selectedCategory) || []
     : dashboard?.links || [];
@@ -364,6 +396,18 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
               >
                 <BarChart3 className="mr-2 h-4 w-4" />
                 Analytics
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setQrLinkId(null);
+                  setShowQRCode(true);
+                }}
+                className="border-gray-600 text-gray-300 hover:bg-gray-800"
+              >
+                <QrCode className="mr-2 h-4 w-4" />
+                QR Code
               </Button>
               <Button
                 variant="outline"
@@ -457,6 +501,10 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
                   key={link.id}
                   link={link}
                   onDelete={handleDeleteLink}
+                  onShowQR={(linkId) => {
+                    setQrLinkId(linkId);
+                    setShowQRCode(true);
+                  }}
                 />
               ))}
             </SortableContext>
@@ -630,6 +678,57 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
                     </Button>
                   </div>
                 </form>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* QR Code Modal */}
+        {showQRCode && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <Card className="w-full max-w-md">
+              <CardHeader>
+                <CardTitle>
+                  {qrLinkId ? "Link QR Code" : "Dashboard QR Code"}
+                </CardTitle>
+                <CardDescription>
+                  {qrLinkId
+                    ? "Scan this QR code to visit the link directly"
+                    : "Scan this QR code to visit your public dashboard"}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex justify-center bg-white p-6 rounded-lg">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={
+                      qrLinkId
+                        ? `/api/links/${qrLinkId}/qrcode?size=300`
+                        : `/api/dashboards/${params.id}/qrcode?size=300`
+                    }
+                    alt="QR Code"
+                    className="w-64 h-64"
+                  />
+                </div>
+                <div className="flex space-x-2">
+                  <Button
+                    onClick={() => handleDownloadQRCode(qrLinkId || undefined)}
+                    className="flex-1 bg-black hover:bg-gray-800 text-white"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Download QR Code
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowQRCode(false);
+                      setQrLinkId(null);
+                    }}
+                    className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
+                  >
+                    Close
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
