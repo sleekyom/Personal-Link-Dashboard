@@ -59,7 +59,7 @@ export async function GET(
           light: "#FFFFFF"
         }
       })
-      return new NextResponse(qrCodeBuffer, {
+      return new NextResponse(new Uint8Array(qrCodeBuffer), {
         headers: {
           "Content-Type": "image/png",
           "Cache-Control": "public, max-age=3600"
