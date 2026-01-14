@@ -9,12 +9,27 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const dashboard = await prisma.dashboard.findUnique({
-      where: { id },
+    const session = await getServerSession(authOptions)
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    // Check if user owns the dashboard
+    const dashboard = await prisma.dashboard.findFirst({
+      where: {
+        id: id,
+        userId: session.user.id
+      },
       include: {
-        links: {
+        categories: {
+          include: {
+            _count: {
+              select: { links: true }
+            }
+          },
           orderBy: {
-            order: 'asc'
+            createdAt: "asc"
           }
         }
       }
@@ -24,15 +39,9 @@ export async function GET(
       return NextResponse.json({ error: "Dashboard not found" }, { status: 404 })
     }
 
-    // Check if dashboard is public or user owns it
-    const session = await getServerSession(authOptions)
-    if (!dashboard.isPublic && session?.user?.id !== dashboard.userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    return NextResponse.json(dashboard.links)
+    return NextResponse.json(dashboard.categories)
   } catch (error) {
-    console.error("Error fetching links:", error)
+    console.error("Error fetching categories:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
@@ -61,33 +70,25 @@ export async function POST(
       return NextResponse.json({ error: "Dashboard not found" }, { status: 404 })
     }
 
-    const { title, url, description, categoryId } = await request.json()
+    const body = await request.json()
+    const { name, color, icon } = body
 
-    // Get the highest order number for this dashboard
-    const lastLink = await prisma.link.findFirst({
-      where: { dashboardId: id },
-      orderBy: { order: 'desc' }
-    })
+    if (!name) {
+      return NextResponse.json({ error: "Category name is required" }, { status: 400 })
+    }
 
-    const newOrder = lastLink ? lastLink.order + 1 : 0
-
-    const link = await prisma.link.create({
+    const category = await prisma.category.create({
       data: {
-        title,
-        url,
-        description,
-        order: newOrder,
-        dashboardId: id,
-        ...(categoryId && { categoryId })
-      },
-      include: {
-        category: true
+        name,
+        color: color || "#3B82F6",
+        icon,
+        dashboardId: id
       }
     })
 
-    return NextResponse.json(link)
+    return NextResponse.json(category, { status: 201 })
   } catch (error) {
-    console.error("Error creating link:", error)
+    console.error("Error creating category:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
