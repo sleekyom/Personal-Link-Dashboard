@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
 import { rateLimit, addRateLimitHeaders, createRateLimitErrorResponse, RateLimitConfigs } from "@/lib/rateLimit"
+import { triggerWebhook } from "@/lib/webhook"
 
 // Helper function to parse user agent
 function parseUserAgent(userAgent: string | null) {
@@ -80,6 +81,17 @@ export async function POST(
           increment: 1
         }
       }
+    })
+
+    // Trigger webhook
+    triggerWebhook(link.dashboardId, "link.clicked", {
+      linkId: link.id,
+      title: link.title,
+      clickCount: updatedLink.clickCount,
+      device,
+      browser,
+      os,
+      referrer
     })
 
     const response = NextResponse.json({ clickCount: updatedLink.clickCount })

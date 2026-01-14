@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { rateLimit, addRateLimitHeaders, createRateLimitErrorResponse, RateLimitConfigs } from "@/lib/rateLimit"
+import { triggerWebhook } from "@/lib/webhook"
 
 export async function GET(
   request: NextRequest,
@@ -90,6 +91,14 @@ export async function POST(
       include: {
         category: true
       }
+    })
+
+    // Trigger webhook
+    triggerWebhook(id, "link.created", {
+      linkId: link.id,
+      title: link.title,
+      url: link.url,
+      description: link.description
     })
 
     const response = NextResponse.json(link)

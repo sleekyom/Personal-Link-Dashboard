@@ -68,6 +68,7 @@ model Dashboard {
   user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   links       Link[]
   categories  Category[]
+  webhooks    Webhook[]
 }
 
 model Link {
@@ -119,4 +120,35 @@ model Category {
   links       Link[]
 
   @@index([dashboardId])
+}
+
+model Webhook {
+  id           String         @id @default(cuid())
+  url          String
+  events       String         // Comma-separated list of events
+  secret       String?        // Optional secret for signing payloads
+  isActive     Boolean        @default(true)
+  dashboardId  String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  lastTriggered DateTime?
+  dashboard    Dashboard      @relation(fields: [dashboardId], references: [id], onDelete: Cascade)
+  deliveries   WebhookDelivery[]
+
+  @@index([dashboardId])
+}
+
+model WebhookDelivery {
+  id          String   @id @default(cuid())
+  webhookId   String
+  event       String
+  payload     String   // JSON stringified payload
+  status      String   // success, failed, pending
+  attempts    Int      @default(0)
+  response    String?  // Response from webhook endpoint
+  createdAt   DateTime @default(now())
+  webhook     Webhook  @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+
+  @@index([webhookId])
+  @@index([createdAt])
 }
